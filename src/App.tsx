@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useLayoutEffect } from 'react';
 import { Menu, Home, Search, User, Settings } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 
@@ -6,6 +6,32 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isSettingsSheetOpen, setIsSettingsSheetOpen] = useState(false);
+  const [insets, setInsets] = useState({ top: 0, bottom: 0, left: 0, right: 0 });
+
+  const getSafeAreaInsets = () => {
+    const testEl = document.createElement('div');
+    testEl.style.cssText = `
+      position: fixed;
+      top: env(safe-area-inset-top);
+      bottom: env(safe-area-inset-bottom);
+      left: env(safe-area-inset-left);
+      right: env(safe-area-inset-right);
+      visibility: hidden;
+    `;
+    document.body.appendChild(testEl);
+    const style = getComputedStyle(testEl);
+    const top = parseInt(style.top) || 0;
+    const bottom = parseInt(style.bottom) || 0;
+    const left = parseInt(style.left) || 0;
+    const right = parseInt(style.right) || 0;
+    document.body.removeChild(testEl);
+    return { top, bottom, left, right };
+  };
+
+  useLayoutEffect(() => {
+    // eslint-disable-next-line
+    setInsets(getSafeAreaInsets());
+  }, []);
 
   return (
     <div className="h-screen w-full flex flex-col bg-gray-50 app-container">
@@ -14,7 +40,12 @@ export default function App() {
         <button onClick={() => setIsSheetOpen(true)} className="p-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg transition-colors">
           <Menu size={24} className="text-gray-700" />
         </button>
-        <h1 className="text-lg font-semibold text-gray-900">Mi App</h1>
+        <div className='flex flex-col'>
+        <span className="text-lg font-semibold text-gray-900">Mi App</span>
+        <div className="text-xs text-gray-500 ml-2">
+          Safe areas: T:{insets.top} B:{insets.bottom} L:{insets.left} R:{insets.right}
+        </div>
+        </div>
         <button onClick={() => setIsSettingsSheetOpen(true)} className="p-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg transition-colors">
           <Settings size={24} className="text-gray-700" />
         </button>
