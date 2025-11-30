@@ -1,18 +1,21 @@
 import { useState } from 'react';
 import { Menu, Home, Search, User, Settings } from 'lucide-react';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isSettingsSheetOpen, setIsSettingsSheetOpen] = useState(false);
 
   return (
     <div className="h-screen w-full flex flex-col bg-gray-50 app-container">
       {/* Barra superior */}
       <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between shadow-sm">
-        <button className="p-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg transition-colors">
+        <button onClick={() => setIsSheetOpen(true)} className="p-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg transition-colors">
           <Menu size={24} className="text-gray-700" />
         </button>
         <h1 className="text-lg font-semibold text-gray-900">Mi App</h1>
-        <button className="p-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg transition-colors">
+        <button onClick={() => setIsSettingsSheetOpen(true)} className="p-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg transition-colors">
           <Settings size={24} className="text-gray-700" />
         </button>
       </header>
@@ -66,6 +69,34 @@ export default function App() {
           </button>
         </div>
       </nav>
+
+      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+        <SheetContent side="left">
+          <SheetHeader>
+            <SheetTitle>Menú</SheetTitle>
+          </SheetHeader>
+          <div className="space-y-4">
+            <button className="w-full text-left p-2 hover:bg-gray-100 rounded">Inicio</button>
+            <button className="w-full text-left p-2 hover:bg-gray-100 rounded">Buscar</button>
+            <button className="w-full text-left p-2 hover:bg-gray-100 rounded">Perfil</button>
+            <button className="w-full text-left p-2 hover:bg-gray-100 rounded">Configuración</button>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      <Sheet open={isSettingsSheetOpen} onOpenChange={setIsSettingsSheetOpen}>
+        <SheetContent side="bottom">
+          <SheetHeader>
+            <SheetTitle>Configuración</SheetTitle>
+          </SheetHeader>
+          <div className="space-y-4">
+            <button className="w-full text-left p-2 hover:bg-gray-100 rounded">Tema</button>
+            <button className="w-full text-left p-2 hover:bg-gray-100 rounded">Notificaciones</button>
+            <button className="w-full text-left p-2 hover:bg-gray-100 rounded">Privacidad</button>
+            <button className="w-full text-left p-2 hover:bg-gray-100 rounded">Ayuda</button>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
